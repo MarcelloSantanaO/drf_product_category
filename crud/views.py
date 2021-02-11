@@ -1,7 +1,8 @@
-from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from .models import Category, Product
 from .serializers import CategorySerializer, ProductSerializer
+from rest_framework import generics
+from rest_framework.response import Response
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -12,3 +13,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+
+class ProductByCategoryViewSet(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    def get_queryset(self):
+        id_ = self.kwargs['id']
+        return Product.objects.filter(categories=id_)
